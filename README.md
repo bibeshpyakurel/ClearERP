@@ -311,11 +311,6 @@ Screenshot reference:
 
 - [docs/screenshots/README.md](docs/screenshots/README.md)
 
-Interview packaging reference:
-
-- [docs/interview-packaging.md](docs/interview-packaging.md)
-- [docs/demo-assets.md](docs/demo-assets.md)
-
 ## API Documentation
 
 Once the backend is running:
