@@ -1,0 +1,13 @@
+bin/
+obj/
+TestResults/
+.vs/
+.vscode/
+coverage/
+*.user
+*.suo
+*.dbmdl
+*.cache
+.DS_Store
+appsettings.Development.json
+appsettings.Local.json

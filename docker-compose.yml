@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: mini-erp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mini_erp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: mini-erp-api
+    working_dir: /app/backend
+    command: ["bash", "-lc", "echo 'Backend scaffold placeholder. Run dotnet restore/build after SDK setup.' && tail -f /dev/null"]
+    env_file:
+      - ./backend/.env.example
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+
+  frontend:
+    image: node:22
+    container_name: mini-erp-frontend
+    working_dir: /app/frontend
+    command: ["bash", "-lc", "if [ -f package.json ]; then npm install && npm run dev -- --host 0.0.0.0; else echo 'Frontend package.json not found'; fi"]
+    env_file:
+      - ./frontend/.env.example
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
