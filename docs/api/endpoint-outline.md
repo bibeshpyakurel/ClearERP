@@ -1,6 +1,6 @@
 # API Endpoint Outline
 
-This is the initial endpoint list for the Mini ERP Inventory Management System. It is intentionally simple and designed to guide implementation before coding begins.
+This is the initial endpoint list for the ClearERP. It is intentionally simple and designed to guide implementation before coding begins.
 
 ## Authentication
 

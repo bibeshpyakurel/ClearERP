@@ -1,6 +1,6 @@
-# Mini ERP Inventory Management System
+# ClearERP
 
-Mini ERP Inventory Management System is a full-stack internal business web app built to simulate the kind of inventory and purchasing workflows used by manufacturing, warehousing, and operations-driven companies. It is designed as a portfolio project, but it follows the same core ideas you would expect in a real ERP module: traceable stock movement, purchasing workflows, reporting, and role-based access.
+ClearERP is a full-stack internal business web app built to simulate the kind of inventory and purchasing workflows used by manufacturing, warehousing, and operations-driven companies. It is designed as a portfolio project, but it follows the same core ideas you would expect in a real ERP module: traceable stock movement, purchasing workflows, reporting, and role-based access.
 
 ## Project Summary
 
@@ -123,13 +123,13 @@ The PostgreSQL database stores:
 .
 ├── backend/
 │   ├── src/
-│   │   ├── MiniErp.Api/
-│   │   ├── MiniErp.Application/
-│   │   ├── MiniErp.Domain/
-│   │   └── MiniErp.Infrastructure/
+│   │   ├── ClearErp.Api/
+│   │   ├── ClearErp.Application/
+│   │   ├── ClearErp.Domain/
+│   │   └── ClearErp.Infrastructure/
 │   └── tests/
-│       ├── MiniErp.UnitTests/
-│       └── MiniErp.IntegrationTests/
+│       ├── ClearErp.UnitTests/
+│       └── ClearErp.IntegrationTests/
 ├── docs/
 │   ├── api/
 │   ├── architecture/
@@ -205,12 +205,12 @@ Current demo coverage includes:
 
 Demo login accounts:
 
-- `admin@minierp.local` / `Admin123!`
-- `warehouse@minierp.local` / `Warehouse123!`
+- `admin@clearerp.local` / `Admin123!`
+- `warehouse@clearerp.local` / `Warehouse123!`
 
 Suggested evaluator flow:
 
-- sign in as `admin@minierp.local`
+- sign in as `admin@clearerp.local`
 - review dashboard KPIs
 - inspect items and suppliers
 - open purchase orders and receive stock
@@ -238,7 +238,7 @@ Optional:
 3. Run the backend API
 4. Run the frontend dev server
 5. Open `http://localhost:5173`
-6. Sign in with `admin@minierp.local` / `Admin123!`
+6. Sign in with `admin@clearerp.local` / `Admin123!`
 
 Create local environment files:
 
@@ -260,26 +260,26 @@ brew services start postgresql@16
 Restore the backend dependencies:
 
 ```bash
-cd "/Users/bibeshpyakurel/Documents/GitHub/Mini ERP Inventory Management System"
+cd "/Users/bibeshpyakurel/Documents/GitHub/ClearERP"
 export DOTNET_ROOT=/opt/homebrew/opt/dotnet@9/libexec
 export PATH="/opt/homebrew/opt/dotnet@9/bin:$PATH"
-dotnet restore backend/MiniErp.sln
+dotnet restore backend/ClearErp.sln
 ```
 
 Run the backend:
 
 ```bash
-cd "/Users/bibeshpyakurel/Documents/GitHub/Mini ERP Inventory Management System"
+cd "/Users/bibeshpyakurel/Documents/GitHub/ClearERP"
 export ASPNETCORE_ENVIRONMENT=Development
 export DOTNET_ROOT=/opt/homebrew/opt/dotnet@9/libexec
 export PATH="/opt/homebrew/opt/dotnet@9/bin:$PATH"
-dotnet run --no-build --project backend/src/MiniErp.Api/MiniErp.Api.csproj --urls http://127.0.0.1:5000
+dotnet run --no-build --project backend/src/ClearErp.Api/ClearErp.Api.csproj --urls http://127.0.0.1:5000
 ```
 
 Run the frontend:
 
 ```bash
-cd "/Users/bibeshpyakurel/Documents/GitHub/Mini ERP Inventory Management System/frontend"
+cd "/Users/bibeshpyakurel/Documents/GitHub/ClearERP/frontend"
 npm install
 npm run dev -- --host 0.0.0.0 --port 5173
 ```
@@ -322,14 +322,14 @@ Current development behavior:
 
 Important note:
 
-- the initial migration is committed in the repository under `backend/src/MiniErp.Infrastructure/Persistence/Migrations`
+- the initial migration is committed in the repository under `backend/src/ClearErp.Infrastructure/Persistence/Migrations`
 - integration tests require Docker because they use PostgreSQL Testcontainers
 
 Migration workflow:
 
 ```bash
-dotnet ef migrations add InitialCreate --project backend/src/MiniErp.Infrastructure --startup-project backend/src/MiniErp.Api
-dotnet ef database update --project backend/src/MiniErp.Infrastructure --startup-project backend/src/MiniErp.Api
+dotnet ef migrations add InitialCreate --project backend/src/ClearErp.Infrastructure --startup-project backend/src/ClearErp.Api
+dotnet ef database update --project backend/src/ClearErp.Infrastructure --startup-project backend/src/ClearErp.Api
 ```
 
 Database design reference:
@@ -400,7 +400,7 @@ Examples covered:
 Run the full backend test suite:
 
 ```bash
-dotnet test backend/MiniErp.sln --nologo
+dotnet test backend/ClearErp.sln --nologo
 ```
 
 Run frontend verification:

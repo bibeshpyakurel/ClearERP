@@ -6,7 +6,7 @@ This project is meant to be easy to evaluate without losing the feel of a real E
 
 Start with the admin account:
 
-- email: `admin@minierp.local`
+- email: `admin@clearerp.local`
 - password: `Admin123!`
 
 That account exposes the full workflow surface, including audit logs.

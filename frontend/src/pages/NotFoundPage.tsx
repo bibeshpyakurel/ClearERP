@@ -15,7 +15,7 @@ export function NotFoundPage() {
     >
       <Stack spacing={2} alignItems="center">
         <Typography variant="overline" sx={{ letterSpacing: 2 }}>
-          Mini ERP
+          ClearERP
         </Typography>
         <Typography variant="h3">Page not found</Typography>
         <Typography color="text.secondary" textAlign="center" maxWidth={420}>

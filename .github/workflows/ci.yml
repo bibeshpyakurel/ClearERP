@@ -28,10 +28,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Restore backend
-        run: dotnet restore backend/MiniErp.sln
+        run: dotnet restore backend/ClearErp.sln
 
       - name: Run backend tests
-        run: dotnet test backend/MiniErp.sln --nologo --configuration Release
+        run: dotnet test backend/ClearErp.sln --nologo --configuration Release
 
       - name: Install frontend dependencies
         working-directory: frontend

@@ -4,10 +4,10 @@ const getEnvValue = (key: string, fallback: string) => {
 };
 
 export const env = {
-  appName: getEnvValue("VITE_APP_NAME", "Mini ERP Inventory Management System"),
+  appName: getEnvValue("VITE_APP_NAME", "ClearERP"),
   apiBaseUrl: getEnvValue("VITE_API_BASE_URL", "http://localhost:5000/api"),
   authTokenStorageKey: getEnvValue(
     "VITE_AUTH_TOKEN_STORAGE_KEY",
-    "mini-erp.access-token",
+    "clear-erp.access-token",
   ),
 };

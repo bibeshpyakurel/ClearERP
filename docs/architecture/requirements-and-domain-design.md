@@ -1,6 +1,6 @@
 # Requirements and Domain Design
 
-This document defines the requirements, business rules, domain model, and database design for the Mini ERP Inventory Management System.
+This document defines the requirements, business rules, domain model, and database design for the ClearERP.
 
 ## Main User Roles
 

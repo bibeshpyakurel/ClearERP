@@ -29,13 +29,13 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const demoAccounts = [
   {
     label: "Admin Demo",
-    email: "admin@minierp.local",
+    email: "admin@clearerp.local",
     password: "Admin123!",
     description: "Full ERP access including audit logs.",
   },
   {
     label: "Warehouse Demo",
-    email: "warehouse@minierp.local",
+    email: "warehouse@clearerp.local",
     password: "Warehouse123!",
     description: "Operational flow without admin-only screens.",
   },
@@ -49,7 +49,7 @@ export function LoginPage() {
 
   const { control, handleSubmit, setError, setValue, formState } = useForm<LoginFormValues>({
     defaultValues: {
-      email: "admin@minierp.local",
+      email: "admin@clearerp.local",
       password: "Admin123!",
     },
   });
@@ -116,7 +116,7 @@ export function LoginPage() {
                 <Chip label="Seeded Data" variant="outlined" size="small" />
               </Stack>
               <Typography variant="overline" sx={{ letterSpacing: 2, color: "primary.main" }}>
-                Mini ERP
+                ClearERP
               </Typography>
               <Typography variant="h4">Operations Sign In</Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>

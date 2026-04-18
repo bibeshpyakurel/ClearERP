@@ -51,7 +51,7 @@ function SidebarContent({
       <Stack spacing={3}>
         <Box>
           <Typography variant="overline" sx={{ letterSpacing: 2.4, opacity: 0.8 }}>
-            Mini ERP
+            ClearERP
           </Typography>
           <Typography variant="h5">Operations Console</Typography>
           <Typography variant="body2" sx={{ opacity: 0.8, mt: 1 }}>
