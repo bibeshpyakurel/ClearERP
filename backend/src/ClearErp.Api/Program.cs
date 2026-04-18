@@ -82,6 +82,25 @@ var issuer = jwtSettings["Issuer"] ?? "ClearErp";
 var audience = jwtSettings["Audience"] ?? "ClearErp.Client";
 var key = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured.");
 
+static Task WriteAuthErrorResponse(HttpContext context, int statusCode, string title, string detail)
+{
+    context.Response.StatusCode = statusCode;
+    context.Response.ContentType = "application/problem+json";
+
+    var payload = new ApiErrorResponse(
+        statusCode,
+        title,
+        detail,
+        context.TraceIdentifier,
+        Type: $"https://tools.ietf.org/html/rfc9110#section-15.{(statusCode >= 500 ? "6" : "5")}.{statusCode - (statusCode >= 500 ? 499 : 399)}",
+        Instance: context.Request.Path.Value);
+
+    return context.Response.WriteAsJsonAsync(payload, new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    });
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -94,6 +113,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = issuer,
             ValidAudience = audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+
+                if (!context.Response.HasStarted)
+                {
+                    await WriteAuthErrorResponse(
+                        context.HttpContext,
+                        StatusCodes.Status401Unauthorized,
+                        "Unauthorized",
+                        "Authentication is required to access this resource.");
+                }
+            },
+            OnForbidden = context => WriteAuthErrorResponse(
+                context.HttpContext,
+                StatusCodes.Status403Forbidden,
+                "Forbidden",
+                "You do not have permission to access this resource.")
         };
     });
 
