@@ -57,20 +57,17 @@ public static class DependencyInjection
 
     private static string ResolveConnectionString(IConfiguration configuration)
     {
-        var configured = configuration.GetConnectionString("DefaultConnection");
-        if (!string.IsNullOrWhiteSpace(configured))
-            return configured;
-
-        // Railway (and many PaaS providers) supply DATABASE_URL as a postgres:// URI
+        // DATABASE_URL takes priority (Railway, Heroku, Render inject this as a postgres:// URI)
         var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
         if (!string.IsNullOrWhiteSpace(databaseUrl))
         {
             var uri = new Uri(databaseUrl);
-            var userInfo = uri.UserInfo.Split(':');
+            var userInfo = uri.UserInfo.Split(':', 2);
             return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
         }
 
-        throw new InvalidOperationException(
-            "Database connection string is not configured. Set ConnectionStrings__DefaultConnection or DATABASE_URL.");
+        return configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "Database connection string is not configured. Set DATABASE_URL or ConnectionStrings__DefaultConnection.");
     }
 }
