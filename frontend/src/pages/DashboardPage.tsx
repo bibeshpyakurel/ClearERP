@@ -5,10 +5,13 @@ import { Link as RouterLink } from "react-router-dom";
 import { ApiClientError } from "../api/client";
 import { PageSection } from "../components/PageSection";
 import { useAuth } from "../features/auth/AuthContext";
+import { useThemeMode } from "../features/theme/ThemeContext";
 import { reportsApi } from "../features/reports/api";
 
 export function DashboardPage() {
   const { accessToken, primaryRole } = useAuth();
+  const { mode } = useThemeMode();
+  const isDark = mode === "dark";
 
   const demoJourneys = [
     {
@@ -119,8 +122,10 @@ export function DashboardPage() {
                 sx={{
                   p: 3,
                   borderRadius: 4,
-                  border: "1px solid rgba(15,82,87,0.12)",
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(15,82,87,0.04) 100%)",
+                  border: isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(15,82,87,0.12)",
+                  background: isDark
+                    ? "none"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(15,82,87,0.04) 100%)",
                 }}
               >
                 <Stack spacing={1.5}>
@@ -178,8 +183,9 @@ export function DashboardPage() {
                   sx={{
                     p: 3,
                     borderRadius: 4,
-                    background:
-                      "linear-gradient(180deg, rgba(15,82,87,0.06) 0%, rgba(255,255,255,0.9) 100%)",
+                    background: isDark
+                      ? "none"
+                      : "linear-gradient(180deg, rgba(15,82,87,0.06) 0%, rgba(255,255,255,0.9) 100%)",
                   }}
                 >
                   <Typography variant="body2" color="text.secondary">
@@ -229,7 +235,7 @@ export function DashboardPage() {
                 sx={{
                   p: 2,
                   borderRadius: 3,
-                  border: "1px solid rgba(15,82,87,0.12)",
+                  border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(15,82,87,0.12)",
                 }}
               >
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>

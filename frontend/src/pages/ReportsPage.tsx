@@ -4,6 +4,7 @@ import { ApiClientError } from "../api/client";
 import { AppDataTable, type TableColumn } from "../components/AppDataTable";
 import { PageSection } from "../components/PageSection";
 import { useAuth } from "../features/auth/AuthContext";
+import { useThemeMode } from "../features/theme/ThemeContext";
 import { reportsApi } from "../features/reports/api";
 import type {
   LowStockReportItem,
@@ -12,6 +13,7 @@ import type {
 
 export function ReportsPage() {
   const { accessToken } = useAuth();
+  const { mode } = useThemeMode();
 
   const lowStockQuery = useQuery({
     queryKey: ["reports-low-stock"],
@@ -177,7 +179,7 @@ export function ReportsPage() {
                         sx={{
                           height: 12,
                           borderRadius: 999,
-                          bgcolor: "rgba(15,82,87,0.08)",
+                          bgcolor: mode === "dark" ? "rgba(255,255,255,0.07)" : "rgba(15,82,87,0.08)",
                           overflow: "hidden",
                         }}
                       >

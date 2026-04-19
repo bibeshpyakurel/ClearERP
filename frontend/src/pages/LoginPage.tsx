@@ -1,4 +1,6 @@
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import {
   Alert,
   Box,
@@ -6,11 +8,14 @@ import {
   Chip,
   Container,
   Divider,
+  IconButton,
   InputAdornment,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
+import { useThemeMode } from "../features/theme/ThemeContext";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -28,16 +33,14 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const demoAccounts = [
   {
-    label: "Admin Demo",
+    label: "Admin",
     email: "admin@clearerp.local",
     password: "Admin123!",
-    description: "Full ERP access including audit logs.",
   },
   {
-    label: "Warehouse Demo",
+    label: "Warehouse",
     email: "warehouse@clearerp.local",
     password: "Warehouse123!",
-    description: "Operational flow without admin-only screens.",
   },
 ] as const;
 
@@ -45,6 +48,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, login } = useAuth();
+  const { mode, toggleMode } = useThemeMode();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { control, handleSubmit, setError, setValue, formState } = useForm<LoginFormValues>({
@@ -67,7 +71,6 @@ export function LoginPage() {
     if (!parsed.success) {
       parsed.error.issues.forEach((issue) => {
         const fieldName = issue.path[0];
-
         if (fieldName === "email" || fieldName === "password") {
           setError(fieldName, { message: issue.message });
         }
@@ -91,7 +94,6 @@ export function LoginPage() {
         setErrorMessage(error.message);
         return;
       }
-
       setErrorMessage("Unable to sign in right now.");
     }
   });
@@ -102,76 +104,160 @@ export function LoginPage() {
         minHeight: "100vh",
         display: "grid",
         placeItems: "center",
-        background:
-          "radial-gradient(circle at top left, #f6ead6 0%, #e2ece4 48%, #cad8d0 100%)",
+        position: "relative",
+        overflow: "hidden",
+        background: mode === "dark"
+          ? "linear-gradient(135deg, #0d2420 0%, #0f1a18 25%, #0b0b0d 50%, #1a0f07 75%, #1f1108 100%)"
+          : "linear-gradient(135deg, #b8ddd4 0%, #eef7f2 28%, #fdf6ec 55%, #fde3c4 80%, #d4ede6 100%)",
         px: 2,
+        py: 3,
       }}
     >
-      <Container maxWidth="sm">
-        <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: 6 }}>
-          <Stack spacing={3}>
+      <style>{`
+        @keyframes orb1 {
+          0%, 100% { transform: translate(0px,   0px)  scale(1);    }
+          30%       { transform: translate(90px, -70px) scale(1.14); }
+          65%       { transform: translate(-50px, 80px) scale(0.9);  }
+        }
+        @keyframes orb2 {
+          0%, 100% { transform: translate(0px,    0px)  scale(1);    }
+          35%       { transform: translate(-80px,  90px) scale(1.1);  }
+          70%       { transform: translate(70px,  -55px) scale(1.18); }
+        }
+        @keyframes orb3 {
+          0%, 100% { transform: translate(0px,  0px)  scale(1);   }
+          50%       { transform: translate(55px, 65px) scale(0.88); }
+        }
+        @keyframes orb4 {
+          0%, 100% { transform: translate(0px,   0px)  scale(1);   }
+          40%       { transform: translate(-60px,-50px) scale(1.1); }
+          75%       { transform: translate(40px,  70px) scale(0.92);}
+        }
+      `}</style>
+
+      {/* dot-grid texture */}
+      <Box sx={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: mode === "dark"
+          ? "radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px)"
+          : "radial-gradient(circle, rgba(15,82,87,0.1) 1px, transparent 1px)",
+        backgroundSize: "26px 26px",
+      }} />
+
+      {/* edge vignette */}
+      <Box sx={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        background: mode === "dark"
+          ? "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(6,6,7,0.85) 100%)"
+          : "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(20,60,55,0.12) 100%)",
+      }} />
+
+      {/* orb 1 — deep teal, top-left */}
+      <Box sx={{
+        position: "absolute", top: "-20%", left: "-15%",
+        width: 680, height: 680, borderRadius: "50%",
+        background: mode === "dark"
+          ? "radial-gradient(circle, rgba(15,90,80,0.35) 0%, transparent 65%)"
+          : "radial-gradient(circle, rgba(15,82,87,0.2) 0%, transparent 65%)",
+        filter: "blur(80px)",
+        animation: "orb1 17s ease-in-out infinite",
+        pointerEvents: "none", zIndex: 0,
+      }} />
+
+      {/* orb 2 — muted warm, bottom-right */}
+      <Box sx={{
+        position: "absolute", bottom: "-25%", right: "-15%",
+        width: 720, height: 720, borderRadius: "50%",
+        background: mode === "dark"
+          ? "radial-gradient(circle, rgba(160,85,25,0.28) 0%, transparent 65%)"
+          : "radial-gradient(circle, rgba(201,122,64,0.22) 0%, transparent 65%)",
+        filter: "blur(90px)",
+        animation: "orb2 20s ease-in-out infinite",
+        pointerEvents: "none", zIndex: 0,
+      }} />
+
+      {/* orb 3 — top-right, barely there */}
+      <Box sx={{
+        position: "absolute", top: "-8%", right: "-8%",
+        width: 400, height: 400, borderRadius: "50%",
+        background: mode === "dark"
+          ? "radial-gradient(circle, rgba(15,82,87,0.1) 0%, transparent 68%)"
+          : "radial-gradient(circle, rgba(74,179,188,0.18) 0%, transparent 68%)",
+        filter: "blur(60px)",
+        animation: "orb3 13s ease-in-out infinite",
+        pointerEvents: "none", zIndex: 0,
+      }} />
+
+      {/* orb 4 — warm bottom-left */}
+      <Box sx={{
+        position: "absolute", bottom: "4%", left: "2%",
+        width: 340, height: 340, borderRadius: "50%",
+        background: mode === "dark"
+          ? "radial-gradient(circle, rgba(100,60,20,0.1) 0%, transparent 68%)"
+          : "radial-gradient(circle, rgba(249,210,140,0.45) 0%, transparent 68%)",
+        filter: "blur(60px)",
+        animation: "orb4 22s ease-in-out infinite",
+        pointerEvents: "none", zIndex: 0,
+      }} />
+
+      <Container maxWidth="xs" sx={{ position: "relative", zIndex: 1 }}>
+        <Paper elevation={0} sx={{
+          p: 3, borderRadius: 1,
+          backgroundColor: mode === "dark" ? "rgba(18,18,20,0.82)" : "rgba(255,253,250,0.78)",
+          backdropFilter: "blur(24px) saturate(1.2)",
+          border: mode === "dark"
+            ? "1px solid rgba(255,255,255,0.08)"
+            : "1px solid rgba(255,255,255,0.75)",
+          boxShadow: mode === "dark"
+            ? "0 8px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)"
+            : "0 8px 40px rgba(15,82,87,0.1), inset 0 1px 0 rgba(255,255,255,0.9)",
+        }}>
+          <Stack spacing={2}>
             <Box>
-              <Stack direction="row" spacing={1} sx={{ mb: 1.5, flexWrap: "wrap" }}>
-                <Chip label="Demo Ready" color="primary" size="small" />
-                <Chip label="Seeded Data" variant="outlined" size="small" />
+              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+                  <Chip label="Demo Ready" color="primary" size="small" />
+                  <Chip label="Seeded Data" variant="outlined" size="small" />
+                </Stack>
+                <Tooltip title={mode === "light" ? "Dark mode" : "Light mode"}>
+                  <IconButton size="small" onClick={toggleMode}>
+                    {mode === "light" ? <DarkModeRoundedIcon fontSize="small" /> : <LightModeRoundedIcon fontSize="small" />}
+                  </IconButton>
+                </Tooltip>
               </Stack>
               <Typography variant="overline" sx={{ letterSpacing: 2, color: "primary.main" }}>
                 ClearERP
               </Typography>
-              <Typography variant="h4">Operations Sign In</Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Sign in with a seeded account and you can inspect items, purchasing, inventory,
-                reports, and audit history immediately.
-              </Typography>
+              <Typography variant="h5">Sign In</Typography>
             </Box>
 
             {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
-            <Alert severity="info">
-              This build is intentionally demo-friendly: seeded data is already present, workflows are
-              connected, and no extra onboarding is required.
-            </Alert>
-
-            <Stack spacing={1.25}>
-              <Typography variant="subtitle2">Try a demo persona</Typography>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
+            <Box>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.75, display: "block" }}>
+                Quick sign in as
+              </Typography>
+              <Stack direction="row" spacing={1}>
                 {demoAccounts.map((account) => (
-                  <Paper
+                  <Button
                     key={account.email}
+                    size="small"
                     variant="outlined"
-                    sx={{ p: 1.5, flex: 1, borderRadius: 3 }}
+                    sx={{ flex: 1 }}
+                    onClick={() => {
+                      setValue("email", account.email);
+                      setValue("password", account.password);
+                    }}
                   >
-                    <Stack spacing={1}>
-                      <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                          {account.label}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {account.description}
-                        </Typography>
-                      </Box>
-                      <Typography variant="caption" color="text.secondary">
-                        {account.email}
-                      </Typography>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        onClick={() => {
-                          setValue("email", account.email);
-                          setValue("password", account.password);
-                        }}
-                      >
-                        Use credentials
-                      </Button>
-                    </Stack>
-                  </Paper>
+                    {account.label}
+                  </Button>
                 ))}
               </Stack>
-            </Stack>
+            </Box>
 
             <Divider />
 
-            <Stack component="form" spacing={2} onSubmit={onSubmit}>
+            <Stack component="form" spacing={1.5} onSubmit={onSubmit}>
               <AppFormTextField
                 control={control}
                 name="email"
@@ -198,32 +284,12 @@ export function LoginPage() {
                 type="submit"
                 variant="contained"
                 size="large"
+                fullWidth
                 disabled={formState.isSubmitting}
               >
                 {formState.isSubmitting ? "Signing in..." : "Sign in"}
               </Button>
             </Stack>
-
-            <Paper
-              variant="outlined"
-              sx={{ p: 2, borderRadius: 3, backgroundColor: "rgba(15,82,87,0.02)" }}
-            >
-              <Stack spacing={0.75}>
-                <Typography variant="subtitle2">Suggested 5-minute walkthrough</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  1. Review the dashboard KPIs.
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  2. Open purchase orders and receive stock.
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  3. Inspect inventory balances and transactions.
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  4. Open reports to see low-stock and valuation outputs.
-                </Typography>
-              </Stack>
-            </Paper>
           </Stack>
         </Paper>
       </Container>

@@ -1,16 +1,23 @@
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import {
   AppBar,
   Box,
+  CircularProgress,
   Drawer,
   IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Toolbar,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -22,8 +29,14 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { env } from "../app/env";
 import { navigationItems } from "../app/navigation";
 import { useAuth } from "../features/auth/AuthContext";
+import { useThemeMode } from "../features/theme/ThemeContext";
 
 const drawerWidth = 280;
+
+const demoPersonas = [
+  { label: "Admin", email: "admin@clearerp.local", password: "Admin123!", role: "Admin" },
+  { label: "Warehouse", email: "warehouse@clearerp.local", password: "Warehouse123!", role: "Warehouse" },
+];
 
 function SidebarContent({
   primaryRole,
@@ -71,7 +84,7 @@ function SidebarContent({
                 to={item.path}
                 onClick={onNavigate}
                 sx={{
-                  borderRadius: 3,
+                  borderRadius: 1,
                   color: "inherit",
                   bgcolor: isActive ? "rgba(255,255,255,0.14)" : "transparent",
                   "&:hover": {
@@ -96,14 +109,31 @@ export function AppShell() {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { currentUser, primaryRole, logout } = useAuth();
+  const { currentUser, primaryRole, login, logout } = useAuth();
+  const { mode, toggleMode } = useThemeMode();
+
+  const [switchAnchor, setSwitchAnchor] = useState<null | HTMLElement>(null);
+  const [switching, setSwitching] = useState(false);
+
+  const otherPersonas = demoPersonas.filter((p) => p.role !== primaryRole);
+
+  const handleSwitch = async (email: string, password: string) => {
+    setSwitchAnchor(null);
+    setSwitching(true);
+    try {
+      await login({ email, password });
+    } finally {
+      setSwitching(false);
+    }
+  };
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #f4efe6 0%, #e4eee5 45%, #d8e3da 100%)",
+        background: mode === "light"
+          ? "linear-gradient(180deg, #f4efe6 0%, #e4eee5 45%, #d8e3da 100%)"
+          : "#0b0b0d",
       }}
     >
       <AppBar
@@ -154,11 +184,50 @@ export function AppShell() {
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ display: { xs: "none", md: "block" }, maxWidth: 240 }}
+              sx={{ display: { xs: "none", md: "block" }, maxWidth: 200 }}
               noWrap
             >
               {currentUser?.email ?? "Signed in"}
             </Typography>
+
+            {/* Persona switcher */}
+            <Tooltip title="Switch demo persona">
+              <span>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  disabled={switching}
+                  onClick={(e) => setSwitchAnchor(e.currentTarget)}
+                >
+                  {switching ? <CircularProgress size={18} color="inherit" /> : <SwapHorizRoundedIcon />}
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Menu
+              anchorEl={switchAnchor}
+              open={Boolean(switchAnchor)}
+              onClose={() => setSwitchAnchor(null)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <Typography variant="caption" color="text.secondary" sx={{ px: 2, pt: 1, display: "block" }}>
+                Switch to
+              </Typography>
+              {otherPersonas.map((p) => (
+                <MenuItem key={p.email} onClick={() => handleSwitch(p.email, p.password)}>
+                  <Stack>
+                    <Typography variant="body2" fontWeight={600}>{p.label}</Typography>
+                    <Typography variant="caption" color="text.secondary">{p.email}</Typography>
+                  </Stack>
+                </MenuItem>
+              ))}
+            </Menu>
+
+            <Tooltip title={mode === "light" ? "Switch to dark mode" : "Switch to light mode"}>
+              <IconButton onClick={toggleMode} color="inherit" size="small">
+                {mode === "light" ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+              </IconButton>
+            </Tooltip>
             <Button
               color="inherit"
               startIcon={<LogoutRoundedIcon />}
