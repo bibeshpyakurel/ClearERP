@@ -48,7 +48,7 @@ jobs:
       - name: Run backend tests
         run: dotnet test backend/ClearErp.sln --nologo --configuration Release
         env:
-          TESTCONTAINERS_RYUK_DISABLED: true
+          CI_POSTGRES_CONNECTION_STRING: "Host=localhost;Port=5432;Database=clear_erp_test;Username=postgres;Password=postgres"
 
       - name: Install frontend dependencies
         working-directory: frontend
