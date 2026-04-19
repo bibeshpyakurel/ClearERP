@@ -36,10 +36,6 @@ The target experience is:
 
 That means the project favors complete workflows, seeded scenarios, and guided exploration over complex tenant setup, user provisioning, or enterprise onboarding steps.
 
-## Resume-Ready Summary
-
-Built a full-stack mini ERP inventory management system using `React`, `.NET 9`, `PostgreSQL`, and `OpenAPI`. Implemented item, supplier, inventory, purchasing, reporting, and audit-log workflows with role-based authentication, seeded demo data, and a layered backend architecture designed to model real internal business software.
-
 ## Architecture Overview
 
 The project uses a standard 3-tier web application architecture:
