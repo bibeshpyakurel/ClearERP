@@ -36,8 +36,9 @@ public sealed class AuthEndpointTests : IClassFixture<PostgresWebApplicationFact
 
         var response = await client.PostAsJsonAsync("/api/auth/login", new
         {
-            Email = "admin@clearerp.local",
-            Password = string.Empty
+            Email = "admin@clearfurniture.local",
+            Password = string.Empty,
+            TenantSlug = "furniture"
         });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

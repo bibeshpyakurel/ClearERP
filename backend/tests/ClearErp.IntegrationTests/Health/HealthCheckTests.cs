@@ -43,8 +43,9 @@ public sealed class HealthCheckTests(PostgresWebApplicationFactory factory)
 
         var response = await client.PostAsJsonAsync("/api/auth/login", new
         {
-            Email = "admin@clearerp.local",
-            Password = "Admin123!"
+            Email = "admin@clearfurniture.local",
+            Password = "Admin123!",
+            TenantSlug = "furniture"
         });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
