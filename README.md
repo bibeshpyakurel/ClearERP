@@ -2,6 +2,8 @@
 
 A full-stack multi-tenant ERP system demonstrating inventory management, procurement workflows, and operational reporting across six industry verticals. Built as a portfolio project showcasing enterprise application architecture with .NET and React.
 
+**Live Demo:** [https://frontend-production-dad7.up.railway.app](https://frontend-production-dad7.up.railway.app)
+
 ---
 
 ## What is ClearERP?
@@ -158,6 +160,8 @@ The React frontend uses a feature-based structure:
 | Technology | Purpose |
 |------------|---------|
 | Docker Compose | Local development orchestration |
+| Docker | Containerized deployment (multi-stage builds) |
+| Railway | Cloud hosting (backend, frontend, PostgreSQL) |
 | GitHub Actions | CI/CD pipeline |
 | Testcontainers | Integration test database |
 
