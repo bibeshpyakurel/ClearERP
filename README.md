@@ -2,7 +2,7 @@
 
 A full-stack multi-tenant ERP system demonstrating inventory management, procurement workflows, and operational reporting across six industry verticals. Built as a portfolio project showcasing enterprise application architecture with .NET and React.
 
-**Live Demo:** _Deployment in progress — see [Deployment](#deployment)._
+**Live Demo:** [https://clearerp.bibespyakurel1100.workers.dev](https://clearerp.bibespyakurel1100.workers.dev)
 
 > The demo runs entirely on free hosting tiers, so the API sleeps after 15 minutes
 > of inactivity. The first request after an idle period takes 30–60 seconds while
