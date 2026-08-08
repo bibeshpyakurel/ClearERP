@@ -63,7 +63,18 @@ public static class DependencyInjection
         {
             var uri = new Uri(databaseUrl);
             var userInfo = uri.UserInfo.Split(':', 2);
-            return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
+
+            // Uri.Port is -1 when the URI omits the port, which managed providers
+            // such as Neon do by default.
+            var port = uri.Port > 0 ? uri.Port : 5432;
+
+            // Userinfo is percent-encoded per RFC 3986, and generated passwords
+            // routinely contain characters that must be decoded before Npgsql
+            // sees them.
+            var username = Uri.UnescapeDataString(userInfo[0]);
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty;
+
+            return $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true;";
         }
 
         return configuration.GetConnectionString("DefaultConnection")

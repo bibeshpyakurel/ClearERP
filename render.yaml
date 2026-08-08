@@ -1,0 +1,51 @@
+# Render Blueprint — ClearERP API
+#
+# The database is NOT defined here on purpose. Render's free PostgreSQL instances
+# expire 30 days after creation and are then deleted, so ClearERP uses an external
+# Neon free-tier Postgres instead. Set ConnectionStrings__DefaultConnection to the
+# Neon connection string when prompted during blueprint setup.
+#
+# Note: dockerfilePath and dockerContext are relative to the REPO ROOT, not rootDir.
+# The backend Dockerfile does `COPY src/...`, so the context must be ./backend.
+
+services:
+  - type: web
+    name: clearerp-api
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: backend
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      # Paste Neon's pooled connection URI verbatim, e.g.
+      # postgresql://neondb_owner:PASSWORD@ep-xxx-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require
+      # The app converts this to Npgsql format and enforces TLS. To supply an
+      # Npgsql-format string instead, set ConnectionStrings__DefaultConnection
+      # and leave this unset — DATABASE_URL takes priority when both are present.
+      - key: DATABASE_URL
+        sync: false
+
+      # Comma-separated list of allowed frontend origins, e.g.
+      # https://clearerp.pages.dev,https://preview.clearerp.pages.dev
+      - key: CORS_ALLOWED_ORIGIN
+        sync: false
+
+      # Render generates a random base64-encoded 256-bit value on first deploy.
+      # Rotating this invalidates every issued JWT.
+      - key: Jwt__Key
+        generateValue: true
+      - key: Jwt__Issuer
+        value: ClearErp
+      - key: Jwt__Audience
+        value: ClearErp.Client
+
+      # Exposes Swagger UI at /swagger on the deployed API so the demo is
+      # explorable. Set to false to keep API docs private.
+      - key: Swagger__Enabled
+        value: "true"

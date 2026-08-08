@@ -206,10 +206,18 @@ app.UseCors("Frontend");
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
+// Always available in development; opt-in elsewhere via Swagger__Enabled so the
+// hosted demo can expose API docs without a code change.
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Deployed environments sit behind a TLS-terminating proxy, so redirecting there
+// would loop on the proxy's forwarded HTTP request.
+if (app.Environment.IsDevelopment())
+{
     app.UseHttpsRedirection();
 }
 app.UseAuthentication();
