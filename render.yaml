@@ -2,11 +2,13 @@
 #
 # The database is NOT defined here on purpose. Render's free PostgreSQL instances
 # expire 30 days after creation and are then deleted, so ClearERP uses an external
-# Neon free-tier Postgres instead. Set ConnectionStrings__DefaultConnection to the
-# Neon connection string when prompted during blueprint setup.
+# Neon free-tier Postgres instead. Set DATABASE_URL to the Neon connection string
+# when prompted during blueprint setup.
 #
-# Note: dockerfilePath and dockerContext are relative to the REPO ROOT, not rootDir.
-# The backend Dockerfile does `COPY src/...`, so the context must be ./backend.
+# Note: when rootDir is set, dockerfilePath and dockerContext resolve relative to
+# rootDir — not the repo root. With rootDir: backend, the paths below resolve to
+# /opt/render/project/src/backend, which is what the Dockerfile's `COPY src/...`
+# instructions expect.
 
 services:
   - type: web
@@ -15,8 +17,8 @@ services:
     plan: free
     region: oregon
     rootDir: backend
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /health
     autoDeployTrigger: commit
     envVars:
