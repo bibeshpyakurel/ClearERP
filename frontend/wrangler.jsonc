@@ -1,0 +1,22 @@
+{
+  // Cloudflare Workers static-asset deployment for the ClearERP SPA.
+  //
+  // There is no Worker script — the frontend is a pure static Vite build, so
+  // Cloudflare serves the assets directly from the edge with no compute cost.
+  //
+  // Dashboard build settings that pair with this file:
+  //   Root directory:  frontend
+  //   Build command:   npm run build
+  //   Deploy command:  npx wrangler deploy
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "clearerp",
+  "compatibility_date": "2026-08-07",
+  "assets": {
+    // Relative to this file, i.e. frontend/dist — the Vite build output.
+    "directory": "./dist",
+    // React Router owns client-side routing, so any unmatched path must return
+    // index.html rather than a 404. This is the Workers equivalent of nginx's
+    // try_files, used by the local Docker Compose setup.
+    "not_found_handling": "single-page-application"
+  }
+}
