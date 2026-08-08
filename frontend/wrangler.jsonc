@@ -17,6 +17,11 @@
     // React Router owns client-side routing, so any unmatched path must return
     // index.html rather than a 404. This is the Workers equivalent of nginx's
     // try_files, used by the local Docker Compose setup.
+    //
+    // Do NOT also add a `_redirects` file with `/* /index.html 200`. That is the
+    // Cloudflare Pages idiom; the Workers asset router strips `/index` and
+    // `.html` before matching, so it rejects that rule as an infinite loop and
+    // fails the deploy.
     "not_found_handling": "single-page-application"
   }
 }
