@@ -13,7 +13,14 @@ export const tokenStorage = {
   isExpired() {
     const expiry = window.localStorage.getItem(expiryKey);
     if (!expiry) return true;
-    return new Date(expiry) <= new Date();
+
+    // Fail closed. An unparseable expiry yields Invalid Date, and every
+    // comparison against Invalid Date is false — so a corrupted value used to
+    // read as "not expired" and the app would keep sending a stale token.
+    const expiresAt = new Date(expiry);
+    if (Number.isNaN(expiresAt.getTime())) return true;
+
+    return expiresAt <= new Date();
   },
   set(token: string, expiresAtUtc: string) {
     window.localStorage.setItem(storageKey, token);

@@ -17,3 +17,6 @@ frontend/.vite/
 
 backend/.env
 backend/.dotnet_home/
+
+# Frontend coverage output
+frontend/coverage/
