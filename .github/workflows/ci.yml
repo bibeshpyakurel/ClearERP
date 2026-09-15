@@ -58,6 +58,13 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      # The frontend used to be built but never tested. These cover the API
+      # client's auth header, 401 session-expiry path and error handling, and
+      # the token store's expiry logic.
+      - name: Test frontend
+        working-directory: frontend
+        run: npm run test:coverage
+
       - name: Build frontend
         working-directory: frontend
         run: npm run build
