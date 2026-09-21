@@ -1,0 +1,9 @@
+{
+  "headlineMetric": "6 industry verticals on one multi-tenant instance, tenant isolation enforced at the database layer",
+  "role": "Sole architect and engineer",
+  "resumeEligible": true,
+  "stack": [".NET 9", "ASP.NET Core", "Entity Framework Core", "PostgreSQL", "React 19", "TypeScript", "Vite", "Docker", "Railway", "GitHub Actions"],
+  "oneLiner": "A multi-tenant ERP for inventory and procurement, isolating six industry verticals behind one JWT role-based access layer.",
+  "startDate": "2026-02",
+  "endDate": "2026-03"
+}
