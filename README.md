@@ -1,12 +1,55 @@
 # ClearERP
 
-A full-stack multi-tenant ERP system demonstrating inventory management, procurement workflows, and operational reporting across six industry verticals. Built as a portfolio project showcasing enterprise application architecture with .NET and React.
+A multi-tenant ERP for inventory management and procurement — six demo companies across six industry verticals, fully isolated from one another, running on one .NET 9 + React 19 codebase. Built for engineering managers and reviewers who want to see enterprise application architecture rather than another CRUD demo.
 
-**Live Demo:** [https://clearerp.bibespyakurel1100.workers.dev](https://clearerp.bibespyakurel1100.workers.dev)
+[![CI](https://github.com/bibeshpyakurel/ClearERP/actions/workflows/ci.yml/badge.svg)](https://github.com/bibeshpyakurel/ClearERP/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/bibeshpyakurel/ClearERP)](LICENSE)
+[![Top language](https://img.shields.io/github/languages/top/bibeshpyakurel/ClearERP)](https://github.com/bibeshpyakurel/ClearERP)
+
+**Live demo → [clearerp.bibespyakurel1100.workers.dev](https://clearerp.bibespyakurel1100.workers.dev/login)**
+
+The login page has quick-fill buttons for every company and role, so you can switch
+tenants and permission levels without creating an account.
 
 > The demo runs entirely on free hosting tiers, so the API sleeps after 15 minutes
 > of inactivity. The first request after an idle period takes 30–60 seconds while
 > the container and database wake up. Subsequent requests are fast.
+
+---
+
+## Screenshots
+
+> **Not yet captured.** The images below are the ones that would explain ClearERP
+> fastest. Drop each file at the path shown and uncomment the matching line.
+
+| Screenshot | Path | Why it matters |
+|---|---|---|
+| The multi-tenant login with quick-fill company/role buttons | `docs/screenshots/login-page.png` | Shows six isolated tenants and three roles in one frame — the architectural headline |
+| The purchase order detail mid-approval, showing the status chain | `docs/screenshots/purchase-orders-page.png` | Shows the procurement state machine (draft → approved → partially received → completed) |
+| The dashboard with KPI tiles and low-stock alerts | `docs/screenshots/dashboard.png` | Shows the operational reporting layer that sits on top of the transaction data |
+
+<!-- ![ClearERP login with per-company quick-fill](docs/screenshots/login-page.png) -->
+<!-- ![Purchase order approval flow](docs/screenshots/purchase-orders-page.png) -->
+<!-- ![Dashboard KPIs and low-stock alerts](docs/screenshots/dashboard.png) -->
+
+---
+
+## What it demonstrates technically
+
+- **Tenant isolation enforced at the data layer, not the controller.** A single EF Core
+  global query filter (`HasQueryFilter`, applied to every tenant-scoped entity in
+  `ApplicationDbContext`) makes cross-tenant reads impossible by construction — a
+  forgotten `WHERE CompanyId = ...` in one query cannot leak another company's data.
+- **Clean Architecture with four enforced layers** — `Domain`, `Application`,
+  `Infrastructure`, `Api` — so business rules stay independent of EF Core and ASP.NET.
+- **A real workflow state machine, not CRUD.** Purchase orders move through five
+  explicit states (`Draft → Approved → PartiallyReceived → Completed`, plus `Cancelled`),
+  with goods receipt writing inventory transactions and an immutable audit trail.
+- **JWT auth with role claims** across three permission levels (Admin, Inventory Manager,
+  Warehouse Staff), checked at the API boundary.
+- **Integration tests against a real PostgreSQL** via Testcontainers, so the tenant
+  filters and migrations are verified against the actual database engine, not a
+  SQLite or in-memory stand-in.
 
 ---
 
@@ -567,6 +610,16 @@ This isn't a todo app or a generic CRUD demo. It's a **production-grade ERP simu
 - Form validation with schema-based approaches
 - Server state management patterns
 - CI/CD pipeline configuration
+
+---
+
+## Status
+
+Feature-complete and deployed. The API, frontend, and database each run on a free
+hosting tier (Render, Cloudflare Workers, Neon), and CI runs backend tests, frontend
+tests, and a production frontend build on every push to `main`. Actively maintained
+as a portfolio reference implementation; not intended for production use with real
+business data.
 
 ---
 
